@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Parlay Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #343a40;
+            color: white;
+        }
+        .leaderboard {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weekly Parlay Tracker</h1>
+
+    <h2>Current Week's Picks</h2>
+    <table id="current-picks">
+        <thead>
+            <tr>
+                <th>Leg</th>
+                <th>Player</th>
+                <th>Pick</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dynamic content will be inserted here -->
+        </tbody>
+    </table>
+
+    <h2 class="leaderboard">Leaderboard</h2>
+    <table id="leaderboard">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Total Winnings</th>
+                <th>Weeks Participated</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dynamic content will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Sample data
+        const picks = [
+            { leg: 1, player: "Alice", pick: "Team A wins" },
+            { leg: 2, player: "Bob", pick: "Over 2.5 goals" },
+            { leg: 3, player: "Charlie", pick: "Under 50.5 points" }
+        ];
+
+        const leaderboard = [
+            { player: "Alice", winnings: 300, weeks: 5 },
+            { player: "Bob", winnings: 250, weeks: 5 },
+            { player: "Charlie", winnings: 200, weeks: 4 }
+        ];
+
+        // Populate Current Picks table
+        const picksTable = document.getElementById('current-picks').querySelector('tbody');
+        picks.forEach(pick => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${pick.leg}</td>
+                <td>${pick.player}</td>
+                <td>${pick.pick}</td>
+            `;
+            picksTable.appendChild(row);
+        });
+
+        // Populate Leaderboard table
+        const leaderboardTable = document.getElementById('leaderboard').querySelector('tbody');
+        leaderboard.sort((a, b) => b.winnings - a.winnings).forEach((entry, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${entry.player}</td>
+                <td>$${entry.winnings}</td>
+                <td>${entry.weeks}</td>
+            `;
+            leaderboardTable.appendChild(row);
+        });
+    </script>
+</body>
+</html>
