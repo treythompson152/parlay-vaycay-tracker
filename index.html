@@ -83,6 +83,7 @@
     <h2>Progress Graph</h2>
     <canvas id="progress-chart" width="800" height="400"></canvas>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Sample data for ticket
         const currentTicket = {
@@ -125,14 +126,13 @@
             leaderboardTable.appendChild(row);
         });
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
+        // Graph for progress
         const ctx = document.getElementById('progress-chart').getContext('2d');
         const weeks = [1, 2, 3, 4, 5];  // Replace with actual week numbers
         const outcomes = [100, 250, 300, 450, 500];  // Replace with actual outcomes
-    
+
         const goalLine = weeks.map(week => 15 * week);
-    
+
         new Chart(ctx, {
             type: 'line',
             data: {
