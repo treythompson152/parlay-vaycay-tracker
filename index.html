@@ -30,18 +30,32 @@
         .leaderboard {
             margin-top: 40px;
         }
+        .pending {
+            background-color: yellow;
+        }
+        .hit {
+            background-color: green;
+            color: white;
+        }
+        .miss {
+            background-color: red;
+            color: white;
+        }
     </style>
 </head>
 <body>
     <h1>Weekly Parlay Tracker</h1>
 
-    <h2>Current Week's Picks</h2>
-    <table id="current-picks">
+    <h2>Current Week's Ticket</h2>
+    <table id="current-ticket">
         <thead>
             <tr>
-                <th>Leg</th>
-                <th>Player</th>
-                <th>Pick</th>
+                <th>Sport</th>
+                <th>Week</th>
+                <th>Pick 1</th>
+                <th>Pick 2</th>
+                <th>Pick 3</th>
+                <th>Total Payout</th>
             </tr>
         </thead>
         <tbody>
@@ -49,14 +63,16 @@
         </tbody>
     </table>
 
-    <h2 class="leaderboard">Leaderboard</h2>
+    <h2 class="leaderboard">Past Weeks</h2>
     <table id="leaderboard">
         <thead>
             <tr>
-                <th>Rank</th>
-                <th>Player</th>
-                <th>Total Winnings</th>
-                <th>Weeks Participated</th>
+                <th>Week</th>
+                <th>Sport</th>
+                <th>Pick 1</th>
+                <th>Pick 2</th>
+                <th>Pick 3</th>
+                <th>Total Payout</th>
             </tr>
         </thead>
         <tbody>
@@ -64,44 +80,98 @@
         </tbody>
     </table>
 
+    <h2>Progress Graph</h2>
+    <canvas id="progress-chart" width="800" height="400"></canvas>
+
     <script>
-        // Sample data
-        const picks = [
-            { leg: 1, player: "Alice", pick: "Team A wins" },
-            { leg: 2, player: "Bob", pick: "Over 2.5 goals" },
-            { leg: 3, player: "Charlie", pick: "Under 50.5 points" }
+        // Sample data for ticket
+        const currentTicket = {
+            sport: "Football",
+            week: "Week 12",
+            picks: [
+                { pick: "Team A wins", status: "pending" },
+                { pick: "Over 2.5 goals", status: "hit" },
+                { pick: "Under 50.5 points", status: "miss" }
+            ],
+            payout: 150
+        };
+
+        const pastTickets = [
+            { week: 1, sport: "Football", picks: ["Team B", "Under 3.5", "Over 45"], payout: 100 },
+            { week: 2, sport: "Basketball", picks: ["Team C", "Over 120", "Under 210"], payout: 200 }
         ];
 
-        const leaderboard = [
-            { player: "Alice", winnings: 300, weeks: 5 },
-            { player: "Bob", winnings: 250, weeks: 5 },
-            { player: "Charlie", winnings: 200, weeks: 4 }
-        ];
+        // Populate Current Ticket
+        const ticketTable = document.getElementById('current-ticket').querySelector('tbody');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${currentTicket.sport}</td>
+            <td>${currentTicket.week}</td>
+            ${currentTicket.picks.map(pick => `<td class="${pick.status}">${pick.pick}</td>`).join('')}
+            <td>$${currentTicket.payout}</td>
+        `;
+        ticketTable.appendChild(row);
 
-        // Populate Current Picks table
-        const picksTable = document.getElementById('current-picks').querySelector('tbody');
-        picks.forEach(pick => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${pick.leg}</td>
-                <td>${pick.player}</td>
-                <td>${pick.pick}</td>
-            `;
-            picksTable.appendChild(row);
-        });
-
-        // Populate Leaderboard table
+        // Populate Past Weeks Leaderboard
         const leaderboardTable = document.getElementById('leaderboard').querySelector('tbody');
-        leaderboard.sort((a, b) => b.winnings - a.winnings).forEach((entry, index) => {
+        pastTickets.forEach(ticket => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${entry.player}</td>
-                <td>$${entry.winnings}</td>
-                <td>${entry.weeks}</td>
+                <td>${ticket.week}</td>
+                <td>${ticket.sport}</td>
+                ${ticket.picks.map(pick => `<td>${pick}</td>`).join('')}
+                <td>$${ticket.payout}</td>
             `;
             leaderboardTable.appendChild(row);
         });
+
+        // Graph for progress
+        const ctx = document.getElementById('progress-chart').getContext('2d');
+        const weeks = [1, 2, 3, 4, 5];  // Replace with actual week numbers
+        const outcomes = [100, 250, 300, 450, 500];  // Replace with actual outcomes
+
+        const goalLine = weeks.map(week => 15 * week);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: weeks,
+                datasets: [
+                    {
+                        label: 'Goal ($15 per week)',
+                        data: goalLine,
+                        borderColor: 'blue',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'Total Outcomes',
+                        data: outcomes,
+                        borderColor: 'green',
+                        borderWidth: 2,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Weeks'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Total Payout ($)'
+                        }
+                    }
+                }
+            }
+        });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
