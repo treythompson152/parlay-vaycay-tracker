@@ -6,86 +6,121 @@
     <title>Weekly Parlay Tracker</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a2e;
+            color: #eaeaea;
         }
-        h1 {
+        header {
+            background-color: #162447;
+            padding: 15px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        header h1 {
+            margin: 0;
+            color: #e43f5a;
+            font-size: 28px;
             text-align: center;
+        }
+        main {
+            padding: 100px 20px 20px;
+        }
+        h2 {
+            color: #e43f5a;
+            border-bottom: 2px solid #e43f5a;
+            padding-bottom: 5px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            background-color: #0f3460;
+            border-radius: 5px;
+            overflow: hidden;
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
+            padding: 15px;
             text-align: center;
+            border-bottom: 1px solid #eaeaea;
         }
         th {
-            background-color: #343a40;
+            background-color: #53354a;
+            color: #ffffff;
+        }
+        .pending {
+            background-color: #f1c40f;
+            color: #000;
+        }
+        .hit {
+            background-color: #27ae60;
+            color: white;
+        }
+        .miss {
+            background-color: #c0392b;
             color: white;
         }
         .leaderboard {
             margin-top: 40px;
         }
-        .pending {
-            background-color: yellow;
-        }
-        .hit {
-            background-color: green;
-            color: white;
-        }
-        .miss {
-            background-color: red;
-            color: white;
+        canvas {
+            background: #162447;
+            padding: 10px;
+            border: 2px solid #e43f5a;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-    <h1>Weekly Parlay Tracker</h1>
+    <header>
+        <h1>Weekly Parlay Tracker</h1>
+    </header>
+    <main>
+        <h2>Current Week's Ticket</h2>
+        <table id="current-ticket">
+            <thead>
+                <tr>
+                    <th>Sport</th>
+                    <th>Week</th>
+                    <th>Pick 1</th>
+                    <th>Pick 2</th>
+                    <th>Pick 3</th>
+                    <th>Total Payout</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dynamic content will be inserted here -->
+            </tbody>
+        </table>
 
-    <h2>Current Week's Ticket</h2>
-    <table id="current-ticket">
-        <thead>
-            <tr>
-                <th>Sport</th>
-                <th>Week</th>
-                <th>Pick 1</th>
-                <th>Pick 2</th>
-                <th>Pick 3</th>
-                <th>Total Payout</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Dynamic content will be inserted here -->
-        </tbody>
-    </table>
+        <h2 class="leaderboard">Past Weeks</h2>
+        <table id="leaderboard">
+            <thead>
+                <tr>
+                    <th>Week</th>
+                    <th>Sport</th>
+                    <th>Pick 1</th>
+                    <th>Pick 2</th>
+                    <th>Pick 3</th>
+                    <th>Total Payout</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dynamic content will be inserted here -->
+            </tbody>
+        </table>
 
-    <h2 class="leaderboard">Past Weeks</h2>
-    <table id="leaderboard">
-        <thead>
-            <tr>
-                <th>Week</th>
-                <th>Sport</th>
-                <th>Pick 1</th>
-                <th>Pick 2</th>
-                <th>Pick 3</th>
-                <th>Total Payout</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Dynamic content will be inserted here -->
-        </tbody>
-    </table>
-
-    <h2>Progress Graph</h2>
-    <canvas id="progress-chart" width="800" height="400"></canvas>
+        <h2>Progress Graph</h2>
+        <canvas id="progress-chart" width="800" height="400"></canvas>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Sample data for ticket
         const currentTicket = {
             sport: "Football",
             week: "Week 12",
@@ -98,38 +133,43 @@
         };
 
         const pastTickets = [
-            { week: 1, sport: "Football", picks: ["Team B", "Under 3.5", "Over 45"], payout: 100 },
-            { week: 2, sport: "Basketball", picks: ["Team C", "Over 120", "Under 210"], payout: 200 }
+            { week: 1, sport: "Football", picks: [
+                { pick: "Team B", status: "hit" },
+                { pick: "Under 3.5", status: "miss" },
+                { pick: "Over 45", status: "hit" }
+            ], payout: 100 },
+            { week: 2, sport: "Basketball", picks: [
+                { pick: "Team C", status: "pending" },
+                { pick: "Over 120", status: "hit" },
+                { pick: "Under 210", status: "miss" }
+            ], payout: 200 }
         ];
 
-        // Populate Current Ticket
         const ticketTable = document.getElementById('current-ticket').querySelector('tbody');
-        const row = document.createElement('tr');
-        row.innerHTML = `
+        const currentRow = document.createElement('tr');
+        currentRow.innerHTML = `
             <td>${currentTicket.sport}</td>
             <td>${currentTicket.week}</td>
             ${currentTicket.picks.map(pick => `<td class="${pick.status}">${pick.pick}</td>`).join('')}
             <td>$${currentTicket.payout}</td>
         `;
-        ticketTable.appendChild(row);
+        ticketTable.appendChild(currentRow);
 
-        // Populate Past Weeks Leaderboard
         const leaderboardTable = document.getElementById('leaderboard').querySelector('tbody');
         pastTickets.forEach(ticket => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${ticket.week}</td>
                 <td>${ticket.sport}</td>
-                ${ticket.picks.map(pick => `<td>${pick}</td>`).join('')}
+                ${ticket.picks.map(pick => `<td class="${pick.status}">${pick.pick}</td>`).join('')}
                 <td>$${ticket.payout}</td>
             `;
             leaderboardTable.appendChild(row);
         });
 
-        // Graph for progress
         const ctx = document.getElementById('progress-chart').getContext('2d');
-        const weeks = [1, 2, 3, 4, 5];  // Replace with actual week numbers
-        const outcomes = [100, 250, 300, 450, 500];  // Replace with actual outcomes
+        const weeks = [1, 2, 3, 4, 5];
+        const outcomes = [100, 250, 300, 450, 500];
 
         const goalLine = weeks.map(week => 15 * week);
 
