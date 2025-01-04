@@ -120,53 +120,57 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
     <script>
-        const currentTicket = {
-            sport: "Football",
-            week: "Week 12",
-            picks: [
-                { pick: "Team A wins", status: "pending" },
-                { pick: "Over 2.5 goals", status: "hit" },
-                { pick: "Under 50.5 points", status: "miss" }
-            ],
-            payout: 150
-        };
+        // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBkLHhHTdLWe4ezlt2pnUdptSSdprObryI",
+        authDomain: "parlay-vaycay.firebaseapp.com",
+        projectId: "parlay-vaycay",
+        storageBucket: "parlay-vaycay.firebasestorage.app",
+        messagingSenderId: "174327136085",
+        appId: "1:174327136085:web:9bebcf73a587005256b9dc",
+        measurementId: "G-6TK3RBP788"
+    };
 
-        const pastTickets = [
-            { week: 1, sport: "Football", picks: [
-                { pick: "Team B", status: "hit" },
-                { pick: "Under 3.5", status: "miss" },
-                { pick: "Over 45", status: "hit" }
-            ], payout: 100 },
-            { week: 2, sport: "Basketball", picks: [
-                { pick: "Team C", status: "pending" },
-                { pick: "Over 120", status: "hit" },
-                { pick: "Under 210", status: "miss" }
-            ], payout: 200 }
-        ];
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
+        // Fetch current ticket and past tickets from Firebase
         const ticketTable = document.getElementById('current-ticket').querySelector('tbody');
-        const currentRow = document.createElement('tr');
-        currentRow.innerHTML = `
-            <td>${currentTicket.sport}</td>
-            <td>${currentTicket.week}</td>
-            ${currentTicket.picks.map(pick => `<td class="${pick.status}">${pick.pick}</td>`).join('')}
-            <td>$${currentTicket.payout}</td>
-        `;
-        ticketTable.appendChild(currentRow);
-
         const leaderboardTable = document.getElementById('leaderboard').querySelector('tbody');
-        pastTickets.forEach(ticket => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${ticket.week}</td>
-                <td>${ticket.sport}</td>
-                ${ticket.picks.map(pick => `<td class="${pick.status}">${pick.pick}</td>`).join('')}
-                <td>$${ticket.payout}</td>
+
+        // Fetch Data from Firebase
+        firebase.database().ref('/currentTicket').on('value', (snapshot) => {
+            const currentTicket = snapshot.val();
+            const currentRow = document.createElement('tr');
+            currentRow.innerHTML = `
+                <td>${currentTicket.sport}</td>
+                <td>${currentTicket.week}</td>
+                ${currentTicket.picks.map(pick => `<td class="${pick.status}">${pick.pick}</td>`).join('')}
+                <td>$${currentTicket.payout}</td>
             `;
-            leaderboardTable.appendChild(row);
+            ticketTable.appendChild(currentRow);
         });
 
+        firebase.database().ref('/pastTickets').on('value', (snapshot) => {
+            const pastTickets = snapshot.val();
+            leaderboardTable.innerHTML = '';
+            pastTickets.forEach(ticket => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${ticket.week}</td>
+                    <td>${ticket.sport}</td>
+                    ${ticket.picks.map(pick => `<td class="${pick.status}">${pick.pick}</td>`).join('')}
+                    <td>$${ticket.payout}</td>
+                `;
+                leaderboardTable.appendChild(row);
+            });
+        });
+
+        // Setup for Progress Chart
         const ctx = document.getElementById('progress-chart').getContext('2d');
         const weeks = [1, 2, 3, 4, 5];
         const outcomes = [100, 250, 300, 450, 500];
