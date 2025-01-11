@@ -4,77 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weekly Parlay Tracker</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #1a1a2e;
-            color: #eaeaea;
-        }
-        header {
-            background-color: #162447;
-            padding: 15px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
-        header h1 {
-            margin: 0;
-            color: #e43f5a;
-            font-size: 28px;
-            text-align: center;
-        }
-        main {
-            padding: 100px 20px 20px;
-        }
-        h2 {
-            color: #e43f5a;
-            border-bottom: 2px solid #e43f5a;
-            padding-bottom: 5px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #0f3460;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid #eaeaea;
-        }
-        th {
-            background-color: #53354a;
-            color: #ffffff;
-        }
-        .pending {
-            background-color: #f1c40f;
-            color: #000;
-        }
-        .hit {
-            background-color: #27ae60;
-            color: white;
-        }
-        .miss {
-            background-color: #c0392b;
-            color: white;
-        }
-        .leaderboard {
-            margin-top: 40px;
-        }
-        canvas {
-            background: #162447;
-            padding: 10px;
-            border: 2px solid #e43f5a;
-            border-radius: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <header>
@@ -85,21 +15,19 @@
         <table id="current-ticket">
             <thead>
                 <tr>
-                    <th>Sport</th>
                     <th>Week</th>
-                    <th>Pick 1</th>
-                    <th>Pick 2</th>
-                    <th>Pick 3</th>
-                    <th>Total Payout</th>
+                    <th>Sport(s)</th>
+                    <th>Trey's Pick</th>
+                    <th>Keilen's Pick</th>
+                    <th>Cayman's Pick</th>
+                    <th>Potential Payout</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Dynamic content will be inserted here -->
-            </tbody>
+            <tbody></tbody>
         </table>
 
-        <h2 class="leaderboard">Past Weeks</h2>
-        <table id="leaderboard">
+        <h2 class="past-weeks">Past Weeks</h2>
+        <table id="past-weeks">
             <thead>
                 <tr>
                     <th>Sport</th>
@@ -110,120 +38,24 @@
                     <th>Total Payout</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Dynamic content will be inserted here -->
-            </tbody>
+            <tbody></tbody>
         </table>
 
         <h2>Progress Graph</h2>
         <canvas id="progress-chart" width="800" height="400"></canvas>
+        <h2>Goal Tracker</h2>
+
+        <div id="goal-tracker" class="goal-tracker">
+            <div id="thermometer" class="thermometer">
+                <div id="fill" class="fill"></div>
+            </div>
+            <p id="goal-text">$0 / $5,000</p>
+        </div>
+
     </main>
-
-<!-- Import Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-
-<script>
-  // Import specific Firebase modules for modular SDK
-  const { initializeApp } = firebase;
-  const { getDatabase, ref, onValue } = firebase.database;
-
-  // Firebase configuration
-  const firebaseConfig = {
-      apiKey: "AIzaSyBkLHhHTdLWe4ezlt2pnUdptSSdprObryI",
-      authDomain: "parlay-vaycay.firebaseapp.com",
-      projectId: "parlay-vaycay",
-      storageBucket: "parlay-vaycay.appspot.com",
-      messagingSenderId: "174327136085",
-      appId: "1:174327136085:web:9bebcf73a587005256b9dc",
-      measurementId: "G-6TK3RBP788"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
-
-  // Fetch current ticket and past tickets from Firebase
-  const ticketTable = document.getElementById('current-ticket').querySelector('tbody');
-  const leaderboardTable = document.getElementById('leaderboard').querySelector('tbody');
-
-  // Fetch data from Firebase
-  onValue(ref(database, '/currentTicket'), (snapshot) => {
-      const currentTicket = snapshot.val();
-      if (currentTicket) {
-          const currentRow = document.createElement('tr');
-          currentRow.innerHTML = `
-              <td>${currentTicket.sport}</td>
-              <td>${currentTicket.week}</td>
-              ${currentTicket.picks.map(pick => `<td class="${pick.status}">${pick.pick}</td>`).join('')}
-              <td>$${currentTicket.payout}</td>
-          `;
-          ticketTable.appendChild(currentRow);
-      }
-  });
-
-  onValue(ref(database, '/pastTickets'), (snapshot) => {
-      const pastTickets = snapshot.val();
-      leaderboardTable.innerHTML = '';
-      pastTickets.forEach(ticket => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-              <td>${ticket.week}</td>
-              <td>${ticket.sport}</td>
-              ${ticket.picks.map(pick => `<td class="${pick.status}">${pick.pick}</td>`).join('')}
-              <td>$${ticket.payout}</td>
-          `;
-          leaderboardTable.appendChild(row);
-      });
-  });
-</script>
-
-        // Setup for Progress Chart
-        const ctx = document.getElementById('progress-chart').getContext('2d');
-        const weeks = [1, 2, 3, 4, 5];
-        const outcomes = [100, 250, 300, 450, 500];
-
-        const goalLine = weeks.map(week => 15 * week);
-
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: weeks,
-                datasets: [
-                    {
-                        label: 'Goal ($15 per week)',
-                        data: goalLine,
-                        borderColor: 'blue',
-                        borderWidth: 2,
-                        fill: false
-                    },
-                    {
-                        label: 'Total Outcomes',
-                        data: outcomes,
-                        borderColor: 'green',
-                        borderWidth: 2,
-                        fill: false
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Weeks'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Total Payout ($)'
-                        }
-                    }
-                }
-            }
-        });
-    </script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/chart.js"></script>
 </body>
 </html>

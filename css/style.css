@@ -1,0 +1,98 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a2e;
+    color: #eaeaea;
+}
+header {
+    background-color: #162447;
+    padding: 15px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+header h1 {
+    margin: 0;
+    color: #e43f5a;
+    font-size: 28px;
+    text-align: center;
+}
+main {
+    padding: 100px 20px 20px;
+}
+h2 {
+    color: #e43f5a;
+    border-bottom: 2px solid #e43f5a;
+    padding-bottom: 5px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #0f3460;
+    border-radius: 5px;
+    overflow: hidden;
+}
+th, td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #eaeaea;
+}
+th {
+    background-color: #53354a;
+    color: #ffffff;
+}
+.pending {
+    background-color: #f1c40f;
+    color: #000;
+}
+.hit {
+    background-color: #27ae60;
+    color: white;
+}
+.miss {
+    background-color: #c0392b;
+    color: white;
+}
+.past-weeks {
+    margin-top: 40px;
+}
+canvas {
+    background: #162447;
+    padding: 10px;
+    border: 2px solid #e43f5a;
+    border-radius: 5px;
+}
+.goal-tracker {
+    margin-top: 40px;
+    width: 100%;
+    text-align: center;
+}
+
+.thermometer {
+    width: 80%;
+    height: 30px;
+    border: 2px solid #e43f5a;
+    background-color: #ddd;
+    margin: 0 auto;
+    position: relative;
+    border-radius: 20px;
+}
+
+.fill {
+    height: 100%;
+    width: 0;
+    background-color: #27ae60;
+    border-radius: 20px 0 0 20px;
+    transition: width 0.5s ease;
+}
+
+#goal-text {
+    font-size: 1.2em;
+    color: #fff;
+    margin-top: 10px;
+}
