@@ -1,17 +1,45 @@
 # Weekly Parlay Tracker
 
 ## Description
-The **Weekly Parlay Tracker** is a web-based application designed to help users track their weekly sports betting parlays. It allows users to input current bets, track past bets, and visualize their progress in reaching a set payout goal. The app also features a dynamic goal tracker that fills up like a thermometer as the user progresses towards their $5000 target.
+
+The **Weekly Parlay Tracker** is a web-based application designed to help users track their weekly sports betting parlays. It allows users to record the current week's betting ticket, review past tickets, monitor player pick accuracy, and visualize cumulative payouts over time. A dynamic "thermometer" progress bar in the header tracks progress toward a $5,000 goal.
 
 ## Features
-- Display current weekly betting ticket details (Sport, Week, Picks, Total Payout).
-- Show a table of past bets with outcomes.
-- Plot a progress chart showing total outcomes over time.
-- Track progress towards a $5000 goal using a dynamic thermometer-style visual.
+
+- **Current Ticket Table**: Display the current week's betting ticket details, including Week, League, Season, Date, Picks (with hit/miss/pending status), Total Odds, Payout, and Notes.
+- **Past Tickets Table**: List previous weeks' tickets in the same format, making it easy to compare results week by week.
+- **Player Statistics**: Calculate and display each player's number of hits, misses, average odds, and hit percentage across all picks.
+- **Progress Chart**: Plot a running total of cumulative payouts on a time-based line chart, alongside a goal line of $15 per week, using Chart.js with date-fns adapter.
+- **Goal Tracker**: A thermometer-style progress bar below the header title shows the aggregate payout toward the $5,000 target, updating live as new data arrives.
 
 ## Technologies Used
-- **HTML5** for structuring the web page.
-- **CSS3** for styling the page with a modern look and feel.
-- **JavaScript** for handling dynamic elements, such as fetching data from Firebase and updating the goal tracker.
-- **Firebase** for storing and retrieving the current and past betting tickets.
-- **Chart.js** for plotting the progress chart.
+
+- **HTML5**: Semantic page structure.
+- **CSS3**: Modern styling, responsive layout, fixed header, tables with fixed-layout for consistent columns.
+- **JavaScript (ES Modules)**: Dynamic DOM manipulation, Firebase SDK for real-time database integration, Chart.js for data visualization.
+- **Firebase Realtime Database**: Stores `currentTicket` and `pastTickets` in a unified JSON schema, enabling live updates without redeploying.
+- **Chart.js**: Interactive line chart with time-scale x-axis (dates) and cumulative payout tracking.
+- **chartjs-adapter-date-fns**: Date adapter for Chart.js to parse and format JavaScript `Date` objects.
+
+## Data Schema (RTDB)
+
+```json
+{
+  "currentTicket": { /* same schema as pastTicket */ },
+  "pastTickets": [ /* array of ticket objects */ ]
+}
+```
+
+Each ticket object includes:
+
+- `ticketId`, `weekNumber`, `weekLabel`, `league`, `season`, `date` (ISO string)
+- `payout`, `totalOdds`, `notes`
+- `picks`: array of `{ player, selection, status: "hit"|"miss"|"pending", odds: "+200"|-150" }`
+
+## Setup & Usage
+
+GitHub Pages Deployment
+
+## License
+
+MIT © Trey Thompson
