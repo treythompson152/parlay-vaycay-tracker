@@ -1,98 +1,167 @@
+/* style.css */
+
 body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #1a1a2e;
-    color: #eaeaea;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #1a1a2e;
+  color: #eaeaea;
 }
+
 header {
-    background-color: #162447;
-    padding: 15px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
+  text-align: center;
+  background-color: #162447;
+  padding: 5px;
+  top: 0;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 1000;
 }
+
 header h1 {
-    margin: 0;
-    color: #e43f5a;
-    font-size: 28px;
-    text-align: center;
+  margin: 0;
+  color: #e43f5a;
+  font-size: 28px;
+  text-align: center;
 }
+
+/* Progress bar container in header */
+#header-progress-container {
+  position: relative;
+  width: 200px;        /* adjust to taste */
+  height: 8px;         /* slimmer than before */
+  background: #444;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-left: 20px;
+}
+
+/* Progress container below title */
+#header-progress-container {
+  width: 60%;           /* match approx title width */
+  max-width: 600px;
+  margin: 10px auto 0;
+  height: 30%;
+}
+
+/* Track background */
+.progress-track {
+  position: relative;
+  width: 100%;
+  height: 12px;
+  background: #444;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* Fill bar */
+.progress-fill {
+  width: 0;
+  height: 100%;
+  background: #e43f5a;
+  transition: width 0.5s ease;
+}
+
+/* Centered text inside bar */
+.progress-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  line-height: 12px;
+  font-size: 0.8em;
+  color: #eaeaea;
+  text-align: center;
+  pointer-events: none;
+}
+
 main {
-    padding: 100px 20px 20px;
+  padding: 10px 20px 20px;
 }
+
 h2 {
-    color: #e43f5a;
-    border-bottom: 2px solid #e43f5a;
-    padding-bottom: 5px;
+  color: #e43f5a;
+  border-bottom: 2px solid #e43f5a;
+  padding-bottom: 5px;
 }
+
+/* Tables */
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: #0f3460;
-    border-radius: 5px;
-    overflow: hidden;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #0f3460;
+  border-radius: 5px;
+  overflow: hidden;
+  table-layout: fixed; /* Force equal column widths */
 }
+
 th, td {
-    padding: 15px;
-    text-align: center;
-    border-bottom: 1px solid #eaeaea;
+  padding: 15px;
+  text-align: center;
+  border-bottom: 1px solid #eaeaea;
+  width: 10%;              /* Each of 10 columns gets 10% */
+  word-wrap: break-word;   /* Legacy */
+  overflow-wrap: break-word; /* Modern */
+  white-space: normal;     /* Allow wrapping */
 }
+
 th {
-    background-color: #53354a;
-    color: #ffffff;
+  background-color: #53354a;
+  color: #ffffff;
 }
+
+/* Pick status coloring */
 .pending {
-    background-color: #f1c40f;
-    color: #000;
+  background-color: #f1c40f;
+  color: #000;
 }
+
 .hit {
-    background-color: #27ae60;
-    color: white;
+  background-color: #27ae60;
+  color: #fff;
 }
+
 .miss {
-    background-color: #c0392b;
-    color: white;
+  background-color: #c0392b;
+  color: #fff;
 }
-.past-weeks {
-    margin-top: 40px;
+
+/* Section spacing */
+.section {
+  margin-top: 40px;
 }
+
+/* Chart styling */
 canvas {
-    background: #162447;
-    padding: 10px;
-    border: 2px solid #e43f5a;
-    border-radius: 5px;
-}
-.goal-tracker {
-    margin-top: 40px;
-    width: 100%;
-    text-align: center;
+  background: #162447;
+  padding: 10px;
+  border: 2px solid #e43f5a;
+  border-radius: 5px;
 }
 
-.thermometer {
-    width: 80%;
-    height: 30px;
-    border: 2px solid #e43f5a;
-    background-color: #ddd;
-    margin: 0 auto;
-    position: relative;
-    border-radius: 20px;
+/* Give Week, League, Season, Date, Odds & Payout narrower columns */
+th:nth-child(1), td:nth-child(1),  /* Week */
+th:nth-child(2), td:nth-child(2),  /* League */
+th:nth-child(3), td:nth-child(3),  /* Season */
+th:nth-child(4), td:nth-child(4),  /* Date */
+th:nth-child(8), td:nth-child(8),  /* Total Odds */
+th:nth-child(9), td:nth-child(9)   /* Payout */
+{
+  width: 8%;
 }
 
-.fill {
-    height: 100%;
-    width: 0;
-    background-color: #27ae60;
-    border-radius: 20px 0 0 20px;
-    transition: width 0.5s ease;
+/* Give each Pick column more room */
+th:nth-child(5), td:nth-child(5),  /* Pick 1 */
+th:nth-child(6), td:nth-child(6),  /* Pick 2 */
+th:nth-child(7), td:nth-child(7)   /* Pick 3 */
+{
+  width: 13%;
 }
 
-#goal-text {
-    font-size: 1.2em;
-    color: #fff;
-    margin-top: 10px;
+/* Give Notes the same wide treatment */
+th:nth-child(10), td:nth-child(10) /* Notes */
+{
+  width: 13%;
 }
+
