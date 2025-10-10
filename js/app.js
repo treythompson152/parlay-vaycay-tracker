@@ -92,9 +92,9 @@ function rowHtmlForTicket(t) {
     cell('League', t.league || ''),
     cell('Season', t.season || ''),
     cell('Date', dateStr),
-    tdForPick('Pick 1', t.picks?.[0]),
-    tdForPick('Pick 2', t.picks?.[1]),
-    tdForPick('Pick 3', t.picks?.[2]),
+    tdForPick('Trey Pick', t.picks?.[0]),
+    tdForPick('Keilen Pick', t.picks?.[1]),
+    tdForPick('Cayman Pick', t.picks?.[2]),
     cell('Total Odds', t.totalOdds || ''),
     cell('Payout', `$${t.payout ?? ''}`),
     cell('Notes', t.notes || '')
