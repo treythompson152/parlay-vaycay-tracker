@@ -1,4 +1,7 @@
 ticketId,weekNumber,weekLabel,league,season,date,totalOdds,payout,notes,p1_player,p1_selection,p1_status,p1_odds,p2_player,p2_selection,p2_status,p2_odds,p3_player,p3_selection,p3_status,p3_odds
+2025-W3,3,3,NFL,2025-2026,2025-09-21,562,0,,Trey,Tyrod Taylor Passing U,miss,-110,Keilen,Bill Over Rushing Attempts 12.5,miss,-121,Cayman,CIN Bengals +3 Spread,Miss,-110
+2025-W2,2,2,NFL,2025-2026,2025-09-11,688,0,,Trey,NE Patriots -1.5,Hit,109,Keilen,PIT Steelers -3.5,miss,101,Cayman,Jordan Love Passing TD Over 1.5,hit,-114
+2025-W1,1,1,NFL,2025-2026,2025-09-03,541,0,,Trey,CIN Bengals -5.5 Spread,miss,-108,Keilen,Henry Rushing Attempts Over 17.5,Hit,-110,Cayman,PHI Eagles -6.5,miss,-150
 2024-SB,22,SB,NFL,2024-2025,2025-02-09T17:56:12.605Z,650,97.5,Converted 2024-2025 season,Trey,JuJu Smith-Schuster Receiving Yards O/U: Under 17.5000,hit,217,Keilen,Anytime TD Scorer: Jalen Hurts,hit,217,Cayman,Xavier Worthy Receiving Yards: 60+,hit,217
 2024-P3,21,P3,NFL,2024-2025,2025-01-26T16:31:36.013Z,410,0,Converted 2024-2025 season,Trey,Anytime TD Scorer: Travis Kelce,miss,137,Keilen,Moneyline: KC Chiefs,hit,137,Cayman,Total Alternate: Over 40.5000,Hit,137
 2024-P2,20,P2,NFL,2024-2025,2025-01-18T17:26:06.134Z,550,0,Converted 2024-2025 season,Trey,Moneyline: PHI Eagles,hit,183,Keilen,Moneyline: BAL Ravens,miss,183,Cayman,Travis Kelce Receptions: 6+,Hit,183
