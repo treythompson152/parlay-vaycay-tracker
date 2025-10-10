@@ -16,19 +16,9 @@ The **Weekly Parlay Tracker** is a web-based application designed to help users 
 
 - **HTML5**: Semantic page structure.
 - **CSS3**: Modern styling, responsive layout, fixed header, tables with fixed-layout for consistent columns.
-- **JavaScript (ES Modules)**: Dynamic DOM manipulation, Firebase SDK for real-time database integration, Chart.js for data visualization.
-- **Firebase Realtime Database**: Stores `currentTicket` and `pastTickets` in a unified JSON schema, enabling live updates without redeploying.
+- **JavaScript (ES Modules)**: Dynamic DOM manipulation, Chart.js for data visualization.
 - **Chart.js**: Interactive line chart with time-scale x-axis (dates) and cumulative payout tracking.
 - **chartjs-adapter-date-fns**: Date adapter for Chart.js to parse and format JavaScript `Date` objects.
-
-## Data Schema (RTDB)
-
-```json
-{
-  "currentTicket": { /* same schema as pastTicket */ },
-  "pastTickets": [ /* array of ticket objects */ ]
-}
-```
 
 Each ticket object includes:
 
