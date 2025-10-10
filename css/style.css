@@ -6,6 +6,7 @@
   --accent: #e43f5a;
   --text: #eaeaea;
   --line: #eaeaea;
+  --header-h: 96px;  
 }
 
 * { box-sizing: border-box; }
@@ -70,7 +71,7 @@ header h1 {
 /* Layout */
 main {
   max-width: 1100px;
-  margin: 96px auto 24px; /* space for fixed header */
+  margin: 0 auto 24px;  /* no top margin */
   padding: 0 12px;
 }
 
@@ -92,6 +93,11 @@ table {
   border-radius: 8px;
   overflow: hidden;
   table-layout: fixed;
+}
+
+/* Place after your header styles */
+.page-offset {
+  height: var(--header-h);
 }
 
 th, td {
@@ -124,7 +130,7 @@ canvas#progress-chart {
 @media (max-width: 720px) {
   /* hide headers; use data-labels for cells */
   table thead { display: none; }
-
+  :root { --header-h: 128px; } /* tweak if your mobile header is taller/shorter */
   table, tbody, tr, td { display: block; width: 100%; }
   tr {
     background: var(--panel);
@@ -165,4 +171,5 @@ canvas#progress-chart {
   .header-progress { max-width: min(92vw, 560px); }
   .progress-wrap { height: 14px; }
   .progress-text { font-size: 0.85rem; margin-top: 6px; }
+  
 }
