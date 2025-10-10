@@ -42,7 +42,7 @@ function parseAmericanOddsToInt(str) {
 }
 
 function processPicks(picks) {
-  picks.forEach(({ player, status, odds }) => {
+  (picks || []).forEach(({ player, status, odds }) => {
     const playerName = player || 'Unknown';
     if (!playerStats[playerName]) playerStats[playerName] = { hits: 0, misses: 0, oddsSum: 0, count: 0 };
     const st = playerStats[playerName];
@@ -62,40 +62,46 @@ function renderStats() {
     const pct = data.count ? ((data.hits / data.count) * 100).toFixed(2) + '%' : '0.00%';
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${player}</td>
-      <td>${data.hits}</td>
-      <td>${data.misses}</td>
-      <td>${avgFmt}</td>
-      <td>${pct}</td>
+      <td data-label="Player">${player}</td>
+      <td data-label="Hits">${data.hits}</td>
+      <td data-label="Misses">${data.misses}</td>
+      <td data-label="Avg Odds">${avgFmt}</td>
+      <td data-label="Hit %">${pct}</td>
     `;
     statsBody.appendChild(tr);
   });
 }
 
-// ====== Ticket helpers ======
-function tdForPick(p) {
-  const cls = p.status || 'pending';
+// ====== Mobile-friendly cells ======
+function cell(label, value, className = '') {
+  return `<td class="${className}" data-label="${label}">${value ?? ''}</td>`;
+}
+
+function tdForPick(label, p = {}) {
+  const cls = (p.status || 'pending').toLowerCase();
   const txt = `${p.selection || ''}${p.odds ? ` (${p.odds})` : ''}`;
-  return `<td class="${cls}">${txt || ''}</td>`;
+  return cell(label, txt || '', cls);
 }
 
 function rowHtmlForTicket(t) {
   const d = t.date ? new Date(t.date) : null;
   const dateStr = d && !isNaN(d) ? d.toLocaleDateString() : (t.date || '');
-  return `
-    <td>${t.weekLabel || ''}</td>
-    <td>${t.league || ''}</td>
-    <td>${t.season || ''}</td>
-    <td>${dateStr}</td>
-    ${tdForPick(t.picks[0] || {})}
-    ${tdForPick(t.picks[1] || {})}
-    ${tdForPick(t.picks[2] || {})}
-    <td>${t.totalOdds || ''}</td>
-    <td>$${(t.payout ?? '')}</td>
-    <td>${t.notes || ''}</td>
-  `;
+
+  return [
+    cell('Week', t.weekLabel || ''),
+    cell('League', t.league || ''),
+    cell('Season', t.season || ''),
+    cell('Date', dateStr),
+    tdForPick('Pick 1', t.picks?.[0]),
+    tdForPick('Pick 2', t.picks?.[1]),
+    tdForPick('Pick 3', t.picks?.[2]),
+    cell('Total Odds', t.totalOdds || ''),
+    cell('Payout', `$${t.payout ?? ''}`),
+    cell('Notes', t.notes || '')
+  ].join('');
 }
 
+// ====== CSV normalization ======
 function normalizeTicket(row) {
   // expected CSV headers:
   // ticketId,weekNumber,weekLabel,league,season,date,totalOdds,payout,notes,
@@ -128,7 +134,7 @@ function normalizeTicket(row) {
   return t;
 }
 
-// ====== Rendering main sections ======
+// ====== Render everything ======
 function renderAll(currentTicket, pastTickets) {
   // Current
   currentBody.innerHTML = '';
@@ -154,10 +160,7 @@ function renderAll(currentTicket, pastTickets) {
   renderStats();
 
   // ---- Progress bar total ----
-  // Base total is sum of past payouts
   let total = sortedPast.reduce((s, t) => s + (Number(t.payout) || 0), 0);
-
-  // If current ticket's 3 picks are all 'hit', include its payout
   const allCurrentHit =
     currentTicket &&
     Array.isArray(currentTicket.picks) &&
@@ -172,47 +175,37 @@ function renderAll(currentTicket, pastTickets) {
   progressBar.style.width = pct + '%';
   progressText.textContent = `$${total} / $5000`;
 
-// ---- Chart (cumulative from 0) ----
-let running = 0;
-const labels = [];
-const cumulative = [];
+  // ---- Chart (cumulative; include current if 3/3 hit) ----
+  let running = 0;
+  const labels = [];
+  const cumulative = [];
 
-// Always graph past tickets first (sorted)
-sortedPast.forEach(t => {
-  const dt = new Date(t.date);
-  labels.push(dt);
-  running += (Number(t.payout) || 0);
-  cumulative.push(running);
-});
+  sortedPast.forEach(t => {
+    const dt = new Date(t.date);
+    labels.push(dt);
+    running += (Number(t.payout) || 0);
+    cumulative.push(running);
+  });
 
-// If current ticket is a 3/3 hit, include it as the next point
-const allCurrentHitChart =
-  currentTicket &&
-  Array.isArray(currentTicket.picks) &&
-  currentTicket.picks.length === 3 &&
-  currentTicket.picks.every(p => (p.status || '').toLowerCase() === 'hit');
-
-if (allCurrentHitChart) {
-  // Prefer current ticket's date; if missing/invalid, place it 1 day after the last label
-  let curDate = currentTicket.date ? new Date(currentTicket.date) : null;
-  if (!curDate || isNaN(curDate)) {
-    curDate = labels.length ? new Date(labels[labels.length - 1].getTime() + 24 * 3600 * 1000) : new Date();
+  if (allCurrentHit) {
+    let curDate = currentTicket.date ? new Date(currentTicket.date) : null;
+    if (!curDate || isNaN(curDate)) {
+      curDate = labels.length ? new Date(labels[labels.length - 1].getTime() + 24 * 3600 * 1000) : new Date();
+    }
+    labels.push(curDate);
+    running += (Number(currentTicket.payout) || 0);
+    cumulative.push(running);
   }
-  labels.push(curDate);
-  running += (Number(currentTicket.payout) || 0);
-  cumulative.push(running);
+
+  const goalLine = labels.map((_, i) => 15 * (i + 1));
+
+  progressChart.data.labels = labels;
+  progressChart.data.datasets[0].data = goalLine;
+  progressChart.data.datasets[1].data = cumulative;
+  progressChart.update();
 }
 
-// Goal line: $15 per point, same length as labels
-const goalLine = labels.map((_, i) => 15 * (i + 1));
-
-progressChart.data.labels = labels;
-progressChart.data.datasets[0].data = goalLine;
-progressChart.data.datasets[1].data = cumulative;
-progressChart.update();
-}
-
-// ====== CSV Loading (always from repo on load) ======
+// ====== CSV Loading (auto from repo) ======
 function handleCsvText(csvText) {
   const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
   if (parsed.errors?.length) {
@@ -226,14 +219,12 @@ function handleCsvText(csvText) {
     return;
   }
 
-  // First row -> current, rest -> past
   const current = normalizeTicket(rows[0]);
   const past = rows.slice(1).map(normalizeTicket);
 
   renderAll(current, past);
 }
 
-// Auto-load the CSV from the repo path on DOM ready
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     const res = await fetch('./data/tickets.csv', { cache: 'no-store' });

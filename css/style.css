@@ -1,167 +1,168 @@
-/* style.css */
+/* Base styles */
+:root {
+  --bg: #1a1a2e;
+  --panel: #0f3460;
+  --header: #162447;
+  --accent: #e43f5a;
+  --text: #eaeaea;
+  --line: #eaeaea;
+}
+
+* { box-sizing: border-box; }
 
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #1a1a2e;
-  color: #eaeaea;
+  background: var(--bg);
+  color: var(--text);
 }
 
 header {
-  text-align: center;
-  background-color: #162447;
-  padding: 5px;
-  top: 0;
-  width: 100%;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: var(--header);
+  padding: 16px 12px;
   z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,.2);
 }
 
 header h1 {
   margin: 0;
-  color: #e43f5a;
+  color: var(--accent);
   font-size: 28px;
   text-align: center;
 }
 
-/* Progress bar container in header */
-#header-progress-container {
-  position: relative;
-  width: 200px;        /* adjust to taste */
-  height: 8px;         /* slimmer than before */
-  background: #444;
-  border-radius: 4px;
+/* Progress bar */
+.header-progress {
+  margin-top: 8px;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.progress-wrap {
+  background: #0f1c35;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  height: 16px;
   overflow: hidden;
-  margin-left: 20px;
+  display: flex;
+  align-items: center;
 }
 
-/* Progress container below title */
-#header-progress-container {
-  width: 60%;           /* match approx title width */
-  max-width: 600px;
-  margin: 10px auto 0;
-  height: 30%;
-}
-
-/* Track background */
-.progress-track {
-  position: relative;
-  width: 100%;
-  height: 12px;
-  background: #444;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-/* Fill bar */
-.progress-fill {
-  width: 0;
+.progress-bar {
   height: 100%;
-  background: #e43f5a;
-  transition: width 0.5s ease;
+  background: #27ae60;
+  width: 0%;
+  transition: width 400ms ease-in-out;
 }
 
-/* Centered text inside bar */
 .progress-text {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  line-height: 12px;
-  font-size: 0.8em;
-  color: #eaeaea;
+  display: block;
+  margin-top: 6px;
   text-align: center;
-  pointer-events: none;
+  font-size: 0.9rem;
+  color: var(--text);
 }
 
+/* Layout */
 main {
-  padding: 10px 20px 20px;
+  max-width: 1100px;
+  margin: 96px auto 24px; /* space for fixed header */
+  padding: 0 12px;
 }
+
+.section { margin-top: 36px; }
 
 h2 {
-  color: #e43f5a;
-  border-bottom: 2px solid #e43f5a;
-  padding-bottom: 5px;
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 6px;
+  margin-top: 28px;
 }
 
 /* Tables */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
-  background-color: #0f3460;
-  border-radius: 5px;
+  margin-top: 16px;
+  background: var(--panel);
+  border-radius: 8px;
   overflow: hidden;
-  table-layout: fixed; /* Force equal column widths */
+  table-layout: fixed;
 }
 
 th, td {
-  padding: 15px;
+  padding: 12px;
   text-align: center;
-  border-bottom: 1px solid #eaeaea;
-  width: 10%;              /* Each of 10 columns gets 10% */
-  word-wrap: break-word;   /* Legacy */
-  overflow-wrap: break-word; /* Modern */
-  white-space: normal;     /* Allow wrapping */
+  border-bottom: 1px solid rgba(234,234,234,0.2);
+  word-break: break-word;
 }
 
 th {
-  background-color: #53354a;
-  color: #ffffff;
-}
-
-/* Pick status coloring */
-.pending {
-  background-color: #f1c40f;
-  color: #000;
-}
-
-.hit {
-  background-color: #27ae60;
+  background: #53354a;
   color: #fff;
 }
 
-.miss {
-  background-color: #c0392b;
-  color: #fff;
-}
+td.hit    { background: rgba(39, 174, 96, 0.15); }
+td.miss   { background: rgba(192, 57, 43, 0.15); }
+td.pending{ background: rgba(241, 196, 15, 0.18); color: #000; }
 
-/* Section spacing */
-.section {
-  margin-top: 40px;
-}
-
-/* Chart styling */
-canvas {
+/* Chart sizing */
+canvas#progress-chart {
   background: #162447;
   padding: 10px;
-  border: 2px solid #e43f5a;
-  border-radius: 5px;
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  width: 100% !important;
+  height: auto !important;
 }
 
-/* Give Week, League, Season, Date, Odds & Payout narrower columns */
-th:nth-child(1), td:nth-child(1),  /* Week */
-th:nth-child(2), td:nth-child(2),  /* League */
-th:nth-child(3), td:nth-child(3),  /* Season */
-th:nth-child(4), td:nth-child(4),  /* Date */
-th:nth-child(8), td:nth-child(8),  /* Total Odds */
-th:nth-child(9), td:nth-child(9)   /* Payout */
-{
-  width: 8%;
-}
+/* ----- Mobile card layout ----- */
+@media (max-width: 720px) {
+  /* hide headers; use data-labels for cells */
+  table thead { display: none; }
 
-/* Give each Pick column more room */
-th:nth-child(5), td:nth-child(5),  /* Pick 1 */
-th:nth-child(6), td:nth-child(6),  /* Pick 2 */
-th:nth-child(7), td:nth-child(7)   /* Pick 3 */
-{
-  width: 13%;
-}
+  table, tbody, tr, td { display: block; width: 100%; }
+  tr {
+    background: var(--panel);
+    margin: 12px 0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+  }
 
-/* Give Notes the same wide treatment */
-th:nth-child(10), td:nth-child(10) /* Notes */
-{
-  width: 13%;
-}
+  td {
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    text-align: right;
+  }
+  td:last-child { border-bottom: none; }
 
+  td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--accent);
+    flex: 0 0 44%;
+    text-align: left;
+  }
+
+  /* status clarity on mobile */
+  td.hit, td.miss, td.pending {
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  /* header spacing/size */
+  header h1 { font-size: 22px; }
+  .header-progress { max-width: min(92vw, 560px); }
+  .progress-wrap { height: 14px; }
+  .progress-text { font-size: 0.85rem; margin-top: 6px; }
+}
