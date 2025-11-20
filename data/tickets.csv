@@ -1,4 +1,10 @@
 ticketId,weekNumber,weekLabel,league,season,date,totalOdds,payout,notes,p1_player,p1_selection,p1_status,p1_odds,p2_player,p2_selection,p2_status,p2_odds,p3_player,p3_selection,p3_status,p3_odds
+2025-W11,11,11,NFL,2025-2026,2025-11-16,575,0,,Trey,SEA vs LA 49.5 O,miss,-100,Keilen,SEA ML,miss,130,Cayman,Davante Adams 4.5 Receptions O,miss,110
+2025-W10,10,10,NFL,2025-2026,2025-11-06,-113,0,Shipped the rebate on JSN O,Trey,JSN Receiving 97.5 O,miss,-113,Keilen,JSN Receiving 97.5 O,miss,-113,Cayman,JSN Receiving 97.5 O,miss,-113
+2025-W9,9,9,NFL,2025-2026,2025-11-02,214,47.23,,Trey,JAX Moneyline,hit,-154,Keilen,Tyler Shough INT,hit,-109,Cayman,Matthew Stafford Passing Yards 250+,hit,-109
+2025-W8,8,8,NFL,2025-2026,2025-10-26,456,0,,Trey,DAL v DEN Over 51.5,hit,-110,Keilen,PIT +3 vs Green Bay,miss,-118,Cayman,Baker Mayfield 2+ Passing TDs,Miss,-173
+2025-W7,7,7,NFL,2025-2026,2025-10-19,640,0,,Trey,Cam Skattabo Rushing Attempts O 14.5,hit,-127,Keilen,Luke McCaffrey Receptions 4+,miss,106,Cayman,Matthew Golden 50+ Receiving Yards,miss,102
+2025-W4,4,4,NFL,2025-2026,2025-09-27,825,0,,Trey,Tua INT O 0.5,miss,-107,Keilen,Jettas TD,miss,145,Cayman,GB Packers,miss,-105
 2025-W3,3,3,NFL,2025-2026,2025-09-21,562,0,,Trey,Tyrod Taylor Passing U,miss,-110,Keilen,Bill Over Rushing Attempts 12.5,miss,-121,Cayman,CIN Bengals +3 Spread,Miss,-110
 2025-W2,2,2,NFL,2025-2026,2025-09-11,688,0,,Trey,NE Patriots -1.5,Hit,109,Keilen,PIT Steelers -3.5,miss,101,Cayman,Jordan Love Passing TD Over 1.5,hit,-114
 2025-W1,1,1,NFL,2025-2026,2025-09-03,541,0,,Trey,CIN Bengals -5.5 Spread,miss,-108,Keilen,Henry Rushing Attempts Over 17.5,Hit,-110,Cayman,PHI Eagles -6.5,miss,-150
