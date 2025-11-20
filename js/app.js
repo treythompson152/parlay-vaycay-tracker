@@ -144,65 +144,68 @@ function renderAll(currentTicket, pastTickets) {
     currentBody.appendChild(tr);
   }
 
-  // Past (sorted by date)
-  pastBody.innerHTML = '';
-  const sortedPast = [...(pastTickets || [])].sort((a,b) => new Date(a.date) - new Date(b.date));
-  sortedPast.forEach(t => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = rowHtmlForTicket(t);
-    pastBody.appendChild(tr);
-  });
+// --- replace your existing "Past (sorted by date)" block in renderAll() ---
 
-  // Stats
-  resetStats();
-  if (currentTicket) processPicks(currentTicket.picks);
-  sortedPast.forEach(t => processPicks(t.picks));
-  renderStats();
+// Make two sorts: DESC for table, ASC for chart
+const pastAsc  = [...(pastTickets || [])].sort((a, b) => new Date(a.date) - new Date(b.date));
+const pastDesc = [...(pastTickets || [])].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  // ---- Progress bar total ----
-  let total = sortedPast.reduce((s, t) => s + (Number(t.payout) || 0), 0);
-  const allCurrentHit =
-    currentTicket &&
-    Array.isArray(currentTicket.picks) &&
-    currentTicket.picks.length === 3 &&
-    currentTicket.picks.every(p => (p.status || '').toLowerCase() === 'hit');
+// Render table (most recent first)
+pastBody.innerHTML = '';
+pastDesc.forEach(t => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = rowHtmlForTicket(t);
+  pastBody.appendChild(tr);
+});
 
-  if (allCurrentHit) {
-    total += (Number(currentTicket.payout) || 0);
+// Stats (order doesn’t matter)
+resetStats();
+if (currentTicket) processPicks(currentTicket.picks);
+pastAsc.forEach(t => processPicks(t.picks));
+renderStats();
+
+// ---- Progress bar total (order doesn't matter) ----
+let total = pastAsc.reduce((s, t) => s + (Number(t.payout) || 0), 0);
+const allCurrentHit =
+  currentTicket &&
+  Array.isArray(currentTicket.picks) &&
+  currentTicket.picks.length === 3 &&
+  currentTicket.picks.every(p => (p.status || '').toLowerCase() === 'hit');
+
+if (allCurrentHit) total += (Number(currentTicket.payout) || 0);
+
+const pct = Math.min((total / 5000) * 100, 100);
+progressBar.style.width = pct + '%';
+progressText.textContent = `$${total} / $5000`;
+
+// ---- Chart (keep chronological) ----
+let running = 0;
+const labels = [];
+const cumulative = [];
+
+pastAsc.forEach(t => {
+  const dt = new Date(t.date);
+  labels.push(dt);
+  running += (Number(t.payout) || 0);
+  cumulative.push(running);
+});
+
+if (allCurrentHit) {
+  let curDate = currentTicket.date ? new Date(currentTicket.date) : null;
+  if (!curDate || isNaN(curDate)) {
+    curDate = labels.length ? new Date(labels[labels.length - 1].getTime() + 24 * 3600 * 1000) : new Date();
   }
+  labels.push(curDate);
+  running += (Number(currentTicket.payout) || 0);
+  cumulative.push(running);
+}
 
-  const pct = Math.min((total / 5000) * 100, 100);
-  progressBar.style.width = pct + '%';
-  progressText.textContent = `$${total} / $5000`;
+const goalLine = labels.map((_, i) => 15 * (i + 1));
+progressChart.data.labels = labels;
+progressChart.data.datasets[0].data = goalLine;
+progressChart.data.datasets[1].data = cumulative;
+progressChart.update();
 
-  // ---- Chart (cumulative; include current if 3/3 hit) ----
-  let running = 0;
-  const labels = [];
-  const cumulative = [];
-
-  sortedPast.forEach(t => {
-    const dt = new Date(t.date);
-    labels.push(dt);
-    running += (Number(t.payout) || 0);
-    cumulative.push(running);
-  });
-
-  if (allCurrentHit) {
-    let curDate = currentTicket.date ? new Date(currentTicket.date) : null;
-    if (!curDate || isNaN(curDate)) {
-      curDate = labels.length ? new Date(labels[labels.length - 1].getTime() + 24 * 3600 * 1000) : new Date();
-    }
-    labels.push(curDate);
-    running += (Number(currentTicket.payout) || 0);
-    cumulative.push(running);
-  }
-
-  const goalLine = labels.map((_, i) => 15 * (i + 1));
-
-  progressChart.data.labels = labels;
-  progressChart.data.datasets[0].data = goalLine;
-  progressChart.data.datasets[1].data = cumulative;
-  progressChart.update();
 }
 
 // ====== CSV Loading (auto from repo) ======
